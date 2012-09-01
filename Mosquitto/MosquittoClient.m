@@ -51,10 +51,30 @@
 {
 	if ((self = [super init]))
 	{
+        if ([anIdentifier length] == 0)
+        {
+            NSLog(@"%s invalid identifier", __func__);
+            return nil;
+        }
+        
 		mosquitto_client = mosquitto_new([anIdentifier cStringUsingEncoding:NSUTF8StringEncoding], (__bridge void *)(self));
 		
 		if (mosquitto_client)
 		{
+            // Validate broker info
+            if (![aBrokerInfo objectForKey:kMQTTBrokerHostKey])
+			{
+                mosquitto_destroy(mosquitto_client);
+                NSLog(@"%s host not specified", __func__);
+                return nil;
+            }
+            else if (![aBrokerInfo objectForKey:kMQTTBrokerPortKey])
+			{
+                mosquitto_destroy(mosquitto_client);
+                NSLog(@"%s port not specified", __func__);
+                return nil;
+            }
+            
 			_identifier = anIdentifier;
 			_brokerInfo = aBrokerInfo;
 			_delegate = aDelegate;
