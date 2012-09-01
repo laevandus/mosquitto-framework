@@ -29,9 +29,11 @@
 #import <Foundation/Foundation.h>
 #include "mosquitto.h"
 
-#define kMQTTBrokerHostKey @"host"
-#define kMQTTBrokerPortKey @"port"
-#define kMQTTBrokerWillKey @"will"
+#define kMQTTBrokerHostKey @"host" // NSString
+#define kMQTTBrokerPortKey @"port" // NSNumber
+#define kMQTTBrokerWillKey @"will" // MQTTBrokerWill
+
+@class MosquittoMessage;
 
 @interface MosquittoClient : NSObject
 {
@@ -52,5 +54,7 @@
 - (BOOL)connect;
 - (BOOL)reconnect;
 - (BOOL)disconnect;
+
+- (BOOL)publishMessage:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
 
 @end

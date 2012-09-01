@@ -34,6 +34,7 @@
 
 @interface MosquittoClient()
 @property (nonatomic, readonly) id delegate;
+@property (nonatomic, readonly) NSCache *messageCache;
 @end
 
 @implementation MosquittoClient
@@ -78,6 +79,10 @@
 			_identifier = anIdentifier;
 			_brokerInfo = aBrokerInfo;
 			_delegate = aDelegate;
+            
+            _messageCache = [[NSCache alloc] init];
+            [_messageCache setName:anIdentifier];
+            [_messageCache setCountLimit:100];
             
             // Default settings
             _keepAliveInterval = 30;
@@ -167,6 +172,36 @@
 
 
 #pragma mark -
+#pragma mark Broker
+
+- (BOOL)publishMessage:(MosquittoMessage *)outgoingMessage error:(NSError **)anError
+{
+    uint16_t messageID = 0;
+    
+    // Get payload
+    uint32_t payload_length = (uint32_t)[outgoingMessage.payload length];
+    uint8_t payload[payload_length];
+    [outgoingMessage.payload getBytes:&payload];
+
+    int result = mosquitto_publish(mosquitto_client, &messageID, [outgoingMessage.topic cStringUsingEncoding:NSUTF8StringEncoding], payload_length, payload, (int)outgoingMessage.qualityOfServiceLevel, true);
+    
+    // libmosquitto assigns IDs for all messages
+    outgoingMessage.messageID = messageID;
+    
+    // In the callback I can return the same message
+    [self.messageCache setObject:outgoingMessage forKey:[NSNumber numberWithUnsignedInteger:outgoingMessage.messageID]];
+    
+    if (anError)
+        *anError = nil;
+    
+    if (result != MOSQ_ERR_SUCCESS)
+        *anError = [self _errorWithMosquittoErrorCode:result];
+    
+    return result == MOSQ_ERR_SUCCESS;
+}
+
+
+#pragma mark -
 #pragma mark Authentication
 
 - (void)setUsername:(NSString *)username password:(NSString *)password
@@ -182,6 +217,15 @@
 {
     _messageRetryInterval = messageRetryInterval;
     mosquitto_message_retry_set(mosquitto_client, (unsigned int)_messageRetryInterval);
+}
+
+
+#pragma mark -
+#pragma mark Errors
+
+- (NSError *)_errorWithMosquittoErrorCode:(NSUInteger)errorCode
+{
+    return [NSError errorWithDomain:@"MosquittoErrorDomain" code:errorCode userInfo:nil];
 }
 
 
@@ -216,7 +260,11 @@ static void on_publish(void *client, uint16_t message_id)
     
     if ([mosquittoClient.delegate respondsToSelector:@selector(mosquittoClient:didPublishMessage:)])
     {
-        MosquittoMessage *message = [[MosquittoMessage alloc] initWithMessageID:message_id];
+        MosquittoMessage *message = [mosquittoClient.messageCache objectForKey:[NSNumber numberWithUnsignedInteger:message_id]];
+       
+        if (!message)
+            message = [[MosquittoMessage alloc] initWithMessageID:message_id];
+        
         [mosquittoClient.delegate mosquittoClient:mosquittoClient didPublishMessage:message];
     }
 }
