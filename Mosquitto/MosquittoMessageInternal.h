@@ -1,8 +1,8 @@
 //
-//  MosquittoClientDelegate.h
+//  MosquittoMessageInternal.h
 //  Mosquitto
 //
-//  Created by Toomas Vahter on 26.08.12.
+//  Created by Toomas Vahter on 30.08.12.
 //  Copyright (c) 2012 Toomas Vahter. All rights reserved.
 //
 //  This content is released under the MIT License (http://www.opensource.org/licenses/mit-license.php).
@@ -27,26 +27,10 @@
 
 
 #import <Foundation/Foundation.h>
-#import "MosquittoClient.h"
-#import "MosquittoMessage.h"
+#include "mosquitto.h"
 
-enum
-{
-    MosquittoConnectionResponseSuccessful = 0,
-    MosquittoConnectionResponseUnacceptableProtocolVersion = 1,
-    MosquittoConnectionResponseRejectedIdentifier = 2,
-    MosquittoConnectionResponseUnavailableBroker = 3
-};
-typedef NSUInteger MosquittoConnectionResponse;
+@interface MosquittoMessage()
 
-@protocol MosquittoClientDelegate <NSObject>
-
-@optional
-- (void)mosquittoClient:(MosquittoClient *)client didReceiveConnectionResponse:(MosquittoConnectionResponse)responseStatus;
-- (void)mosquittoClientDidDisconnect:(MosquittoClient *)client;
-- (void)mosquittoClient:(MosquittoClient *)client didPublishMessage:(MosquittoMessage *)message;
-- (void)mosquittoClient:(MosquittoClient *)client didReceiveMessage:(MosquittoMessage *)message;
-- (void)mosquittoClient:(MosquittoClient *)client didSubscribe:(MosquittoMessage *)message;
-- (void)mosquittoClient:(MosquittoClient *)client didUnsubscribe:(MosquittoMessage *)message;
+- (id)initWithCMessage:(const struct mosquitto_message *)message;
 
 @end

@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C839B7FE15EA801E004ABBF2 /* MosquittoClientDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = C839B7FD15EA801E004ABBF2 /* MosquittoClientDelegate.h */; };
-		C839B80615EA875E004ABBF2 /* MQTTBrokerWill.h in Headers */ = {isa = PBXBuildFile; fileRef = C839B80415EA875E004ABBF2 /* MQTTBrokerWill.h */; };
+		C839B7FE15EA801E004ABBF2 /* MosquittoClientDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = C839B7FD15EA801E004ABBF2 /* MosquittoClientDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C839B80615EA875E004ABBF2 /* MQTTBrokerWill.h in Headers */ = {isa = PBXBuildFile; fileRef = C839B80415EA875E004ABBF2 /* MQTTBrokerWill.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C839B80715EA875E004ABBF2 /* MQTTBrokerWill.m in Sources */ = {isa = PBXBuildFile; fileRef = C839B80515EA875E004ABBF2 /* MQTTBrokerWill.m */; };
 		C8962AA015E92D890070C1C6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8962A9F15E92D890070C1C6 /* Cocoa.framework */; };
 		C8962AAA15E92D890070C1C6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C8962AA815E92D890070C1C6 /* InfoPlist.strings */; };
@@ -39,9 +39,12 @@
 		C8962AFB15E932DA0070C1C6 /* util_mosq.h in Headers */ = {isa = PBXBuildFile; fileRef = C8962AE315E932DA0070C1C6 /* util_mosq.h */; };
 		C8962AFC15E932DA0070C1C6 /* will_mosq.c in Sources */ = {isa = PBXBuildFile; fileRef = C8962AE415E932DA0070C1C6 /* will_mosq.c */; };
 		C8962AFD15E932DA0070C1C6 /* will_mosq.h in Headers */ = {isa = PBXBuildFile; fileRef = C8962AE515E932DA0070C1C6 /* will_mosq.h */; };
-		C8962B0015E933210070C1C6 /* MosquittoClient.h in Headers */ = {isa = PBXBuildFile; fileRef = C8962AFE15E933210070C1C6 /* MosquittoClient.h */; };
+		C8962B0015E933210070C1C6 /* MosquittoClient.h in Headers */ = {isa = PBXBuildFile; fileRef = C8962AFE15E933210070C1C6 /* MosquittoClient.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C8962B0115E933210070C1C6 /* MosquittoClient.m in Sources */ = {isa = PBXBuildFile; fileRef = C8962AFF15E933210070C1C6 /* MosquittoClient.m */; };
 		C89ABE3B15EFCEC900E4CCC6 /* COPYING.txt in Resources */ = {isa = PBXBuildFile; fileRef = C89ABE3A15EFCEC900E4CCC6 /* COPYING.txt */; };
+		C89ABE4415EFE21000E4CCC6 /* MosquittoMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = C89ABE4215EFE21000E4CCC6 /* MosquittoMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C89ABE4515EFE21000E4CCC6 /* MosquittoMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = C89ABE4315EFE21000E4CCC6 /* MosquittoMessage.m */; };
+		C89ABE4815EFE2F700E4CCC6 /* MosquittoMessageInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = C89ABE4715EFE2F700E4CCC6 /* MosquittoMessageInternal.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		C8B3CBA015E9356800EAD702 /* mosquitto.c in Sources */ = {isa = PBXBuildFile; fileRef = C8B3CB9E15E9356700EAD702 /* mosquitto.c */; };
 		C8B3CBA115E9356800EAD702 /* mosquitto.h in Headers */ = {isa = PBXBuildFile; fileRef = C8B3CB9F15E9356800EAD702 /* mosquitto.h */; };
 /* End PBXBuildFile section */
@@ -99,6 +102,9 @@
 		C8962AFE15E933210070C1C6 /* MosquittoClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MosquittoClient.h; sourceTree = "<group>"; };
 		C8962AFF15E933210070C1C6 /* MosquittoClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MosquittoClient.m; sourceTree = "<group>"; };
 		C89ABE3A15EFCEC900E4CCC6 /* COPYING.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING.txt; sourceTree = "<group>"; };
+		C89ABE4215EFE21000E4CCC6 /* MosquittoMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MosquittoMessage.h; sourceTree = "<group>"; };
+		C89ABE4315EFE21000E4CCC6 /* MosquittoMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MosquittoMessage.m; sourceTree = "<group>"; };
+		C89ABE4715EFE2F700E4CCC6 /* MosquittoMessageInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MosquittoMessageInternal.h; sourceTree = "<group>"; };
 		C8B3CB9E15E9356700EAD702 /* mosquitto.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mosquitto.c; path = libmosquitto/mosquitto.c; sourceTree = "<group>"; };
 		C8B3CB9F15E9356800EAD702 /* mosquitto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mosquitto.h; path = libmosquitto/mosquitto.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -172,6 +178,9 @@
 				C839B7FD15EA801E004ABBF2 /* MosquittoClientDelegate.h */,
 				C839B80415EA875E004ABBF2 /* MQTTBrokerWill.h */,
 				C839B80515EA875E004ABBF2 /* MQTTBrokerWill.m */,
+				C89ABE4715EFE2F700E4CCC6 /* MosquittoMessageInternal.h */,
+				C89ABE4215EFE21000E4CCC6 /* MosquittoMessage.h */,
+				C89ABE4315EFE21000E4CCC6 /* MosquittoMessage.m */,
 				C8962ACD15E932C70070C1C6 /* libmosquitto */,
 				C8962AA615E92D890070C1C6 /* Supporting Files */,
 			);
@@ -246,6 +255,11 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8962B0015E933210070C1C6 /* MosquittoClient.h in Headers */,
+				C839B7FE15EA801E004ABBF2 /* MosquittoClientDelegate.h in Headers */,
+				C839B80615EA875E004ABBF2 /* MQTTBrokerWill.h in Headers */,
+				C89ABE4415EFE21000E4CCC6 /* MosquittoMessage.h in Headers */,
+				C89ABE4815EFE2F700E4CCC6 /* MosquittoMessageInternal.h in Headers */,
 				C8962AE715E932DA0070C1C6 /* logging_mosq.h in Headers */,
 				C8962AE915E932DA0070C1C6 /* memory_mosq.h in Headers */,
 				C8962AEB15E932DA0070C1C6 /* messages_mosq.h in Headers */,
@@ -257,10 +271,7 @@
 				C8962AF915E932DA0070C1C6 /* send_mosq.h in Headers */,
 				C8962AFB15E932DA0070C1C6 /* util_mosq.h in Headers */,
 				C8962AFD15E932DA0070C1C6 /* will_mosq.h in Headers */,
-				C8962B0015E933210070C1C6 /* MosquittoClient.h in Headers */,
 				C8B3CBA115E9356800EAD702 /* mosquitto.h in Headers */,
-				C839B7FE15EA801E004ABBF2 /* MosquittoClientDelegate.h in Headers */,
-				C839B80615EA875E004ABBF2 /* MQTTBrokerWill.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,6 +397,7 @@
 				C8962B0115E933210070C1C6 /* MosquittoClient.m in Sources */,
 				C8B3CBA015E9356800EAD702 /* mosquitto.c in Sources */,
 				C839B80715EA875E004ABBF2 /* MQTTBrokerWill.m in Sources */,
+				C89ABE4515EFE21000E4CCC6 /* MosquittoMessage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

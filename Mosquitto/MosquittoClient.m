@@ -28,6 +28,9 @@
 
 #import "MosquittoClient.h"
 #import "MQTTBrokerWill.h"
+#import "MosquittoClientDelegate.h"
+#import "MosquittoMessage.h"
+#import "MosquittoMessageInternal.h"
 
 @interface MosquittoClient()
 @property (nonatomic, readonly) id delegate;
@@ -128,54 +131,76 @@
 
 static void on_connect(void *client, int response_code)
 {
+    MosquittoClient *mosquittoClient = (__bridge MosquittoClient *)client;
     
+    if ([mosquittoClient.delegate respondsToSelector:@selector(mosquittoClient:didReceiveConnectionResponse:)])
+    {
+        [mosquittoClient.delegate mosquittoClient:mosquittoClient didReceiveConnectionResponse:response_code];
+    }
 }
 
 
 static void on_disconnect(void *client)
 {
+    MosquittoClient *mosquittoClient = (__bridge MosquittoClient *)client;
     
+    if ([mosquittoClient.delegate respondsToSelector:@selector(mosquittoClientDidDisconnect:)])
+    {
+        [mosquittoClient.delegate mosquittoClientDidDisconnect:mosquittoClient];
+    }
 }
 
 
 static void on_publish(void *client, uint16_t message_id)
 {
+    MosquittoClient *mosquittoClient = (__bridge MosquittoClient *)client;
     
+    if ([mosquittoClient.delegate respondsToSelector:@selector(mosquittoClient:didPublishMessage:)])
+    {
+        MosquittoMessage *message = [[MosquittoMessage alloc] initWithMessageID:message_id];
+        [mosquittoClient.delegate mosquittoClient:mosquittoClient didPublishMessage:message];
+    }
 }
 
 
 static void on_message(void *client, const struct mosquitto_message *message)
 {
-    // copy it
+    MosquittoClient *mosquittoClient = (__bridge MosquittoClient *)client;
+    
+    if ([mosquittoClient.delegate respondsToSelector:@selector(mosquittoClient:didReceiveMessage:)])
+    {
+        MosquittoMessage *mosquittoMessage = [[MosquittoMessage alloc] initWithCMessage:message];
+        [mosquittoClient.delegate mosquittoClient:mosquittoClient didReceiveMessage:mosquittoMessage];
+    }
 }
 
 
 static void on_subscribe(void *client, uint16_t message_id, int qos_count, const uint8_t *granted_qos)
 {
+    MosquittoClient *mosquittoClient = (__bridge MosquittoClient *)client;
     
+    if ([mosquittoClient.delegate respondsToSelector:@selector(mosquittoClient:didSubscribe:)])
+    {
+        struct mosquitto_message mosq_message;
+        mosq_message.mid = message_id;
+        mosq_message.payload = (uint8_t *)granted_qos;
+        mosq_message.payloadlen = qos_count;
+        
+        MosquittoMessage *message = [[MosquittoMessage alloc] initWithCMessage:&mosq_message];
+        [mosquittoClient.delegate mosquittoClient:mosquittoClient didPublishMessage:message];
+    }
 }
 
 
 static void on_unsubscribe(void *client, uint16_t message_id)
 {
+    MosquittoClient *mosquittoClient = (__bridge MosquittoClient *)client;
     
+    if ([mosquittoClient.delegate respondsToSelector:@selector(mosquittoClient:didUnsubscribe:)])
+    {
+        MosquittoMessage *message = [[MosquittoMessage alloc] initWithMessageID:message_id];
+        [mosquittoClient.delegate mosquittoClient:mosquittoClient didUnsubscribe:message];
+    }
 }
 
 @end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
