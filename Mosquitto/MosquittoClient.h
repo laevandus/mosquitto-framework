@@ -49,10 +49,8 @@
 @property (nonatomic, assign) BOOL cleanSession; // defaults to YES, takes effect when calling connect
 @property (nonatomic, assign) NSUInteger messageRetryInterval; // defaults to 60 seconds, takes effect immediately
 
-
-
-//- (void)connect;
-//- (void)reconnect;
-//- (void)disconnect;
+- (BOOL)connect;
+- (BOOL)reconnect;
+- (BOOL)disconnect;
 
 @end

@@ -109,6 +109,44 @@
 
 
 #pragma mark -
+#pragma mark Connection
+
+- (BOOL)connect
+{
+    NSString *host = [self.brokerInfo objectForKey:kMQTTBrokerHostKey];
+    int port = [[self.brokerInfo objectForKey:kMQTTBrokerPortKey] intValue];
+    int result = mosquitto_connect(mosquitto_client, [host cStringUsingEncoding:NSUTF8StringEncoding], port, (int)self.keepAliveInterval, self.cleanSession);
+    
+    if (result != MOSQ_ERR_SUCCESS)
+        NSLog(@"%s failed with libmosquitto error code %d", __func__, result);
+    
+    return result == MOSQ_ERR_SUCCESS;
+}
+
+
+- (BOOL)reconnect
+{
+    int result = mosquitto_reconnect(mosquitto_client);
+    
+    if (result != MOSQ_ERR_SUCCESS)
+        NSLog(@"%s failed with libmosquitto error code %d", __func__, result);
+    
+    return result == MOSQ_ERR_SUCCESS;
+}
+
+
+- (BOOL)disconnect
+{
+    int result = mosquitto_disconnect(mosquitto_client);
+    
+    if (result != MOSQ_ERR_SUCCESS)
+        NSLog(@"%s failed with libmosquitto error code %d", __func__, result);
+    
+    return result == MOSQ_ERR_SUCCESS;
+}
+
+
+#pragma mark -
 #pragma mark Authentication
 
 - (void)setUsername:(NSString *)username password:(NSString *)password
