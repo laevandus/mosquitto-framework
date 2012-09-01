@@ -82,7 +82,7 @@
             
             _messageCache = [[NSCache alloc] init];
             [_messageCache setName:anIdentifier];
-            [_messageCache setCountLimit:100];
+            [_messageCache setCountLimit:1024];
             
             // Default settings
             _keepAliveInterval = 30;
@@ -201,6 +201,42 @@
 }
 
 
+- (BOOL)subscribeToTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError
+{
+    uint16_t messageID = 0;
+    int result = mosquitto_subscribe(mosquitto_client, &messageID, [outgoingMessage.topic cStringUsingEncoding:NSUTF8StringEncoding], (int)outgoingMessage.qualityOfServiceLevel);
+    
+    outgoingMessage.messageID = messageID;
+    [self.messageCache setObject:outgoingMessage forKey:[NSNumber numberWithUnsignedInteger:outgoingMessage.messageID]];
+    
+    if (anError)
+        *anError = nil;
+    
+    if (result != MOSQ_ERR_SUCCESS)
+        *anError = [self _errorWithMosquittoErrorCode:result];
+    
+    return result == MOSQ_ERR_SUCCESS;
+}
+
+
+- (BOOL)unsubscribeFromTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError
+{
+    uint16_t messageID = 0;
+    int result = mosquitto_unsubscribe(mosquitto_client, &messageID, [outgoingMessage.topic cStringUsingEncoding:NSUTF8StringEncoding]);
+    
+    outgoingMessage.messageID = messageID;
+    [self.messageCache setObject:outgoingMessage forKey:[NSNumber numberWithUnsignedInteger:outgoingMessage.messageID]];
+    
+    if (anError)
+        *anError = nil;
+    
+    if (result != MOSQ_ERR_SUCCESS)
+        *anError = [self _errorWithMosquittoErrorCode:result];
+    
+    return result == MOSQ_ERR_SUCCESS;
+}
+
+
 #pragma mark -
 #pragma mark Authentication
 
@@ -261,7 +297,8 @@ static void on_publish(void *client, uint16_t message_id)
     if ([mosquittoClient.delegate respondsToSelector:@selector(mosquittoClient:didPublishMessage:)])
     {
         MosquittoMessage *message = [mosquittoClient.messageCache objectForKey:[NSNumber numberWithUnsignedInteger:message_id]];
-       
+        [mosquittoClient.messageCache removeObjectForKey:[NSNumber numberWithUnsignedInteger:message_id]];
+        
         if (!message)
             message = [[MosquittoMessage alloc] initWithMessageID:message_id];
         
@@ -288,12 +325,25 @@ static void on_subscribe(void *client, uint16_t message_id, int qos_count, const
     
     if ([mosquittoClient.delegate respondsToSelector:@selector(mosquittoClient:didSubscribe:)])
     {
-        struct mosquitto_message mosq_message;
-        mosq_message.mid = message_id;
-        mosq_message.payload = (uint8_t *)granted_qos;
-        mosq_message.payloadlen = qos_count;
+        MosquittoMessage *message = [mosquittoClient.messageCache objectForKey:[NSNumber numberWithUnsignedInteger:message_id]];
+        [mosquittoClient.messageCache removeObjectForKey:[NSNumber numberWithUnsignedInteger:message_id]];
         
-        MosquittoMessage *message = [[MosquittoMessage alloc] initWithCMessage:&mosq_message];
+        if (!message)
+        {
+            // Caching failed, create a new message instance
+            struct mosquitto_message mosq_message;
+            mosq_message.mid = message_id;
+            mosq_message.payload = (uint8_t *)granted_qos;
+            mosq_message.payloadlen = qos_count;
+            
+            message = [[MosquittoMessage alloc] initWithCMessage:&mosq_message];
+        }
+        else
+        {
+            // Set payload to the message used for subscribing
+            message.payload = [[NSData alloc] initWithBytes:granted_qos length:qos_count];
+        }
+        
         [mosquittoClient.delegate mosquittoClient:mosquittoClient didPublishMessage:message];
     }
 }
@@ -305,7 +355,12 @@ static void on_unsubscribe(void *client, uint16_t message_id)
     
     if ([mosquittoClient.delegate respondsToSelector:@selector(mosquittoClient:didUnsubscribe:)])
     {
-        MosquittoMessage *message = [[MosquittoMessage alloc] initWithMessageID:message_id];
+        MosquittoMessage *message = [mosquittoClient.messageCache objectForKey:[NSNumber numberWithUnsignedInteger:message_id]];
+        [mosquittoClient.messageCache removeObjectForKey:[NSNumber numberWithUnsignedInteger:message_id]];
+        
+        if (!message)
+            message = [[MosquittoMessage alloc] initWithMessageID:message_id];
+        
         [mosquittoClient.delegate mosquittoClient:mosquittoClient didUnsubscribe:message];
     }
 }

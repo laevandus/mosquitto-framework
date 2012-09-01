@@ -69,5 +69,7 @@ typedef NSUInteger MosquittoErrorCode;
 - (BOOL)disconnect;
 
 - (BOOL)publishMessage:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
+- (BOOL)subscribeToTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
+- (BOOL)unsubscribeFromTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
 
 @end
