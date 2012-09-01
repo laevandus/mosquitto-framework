@@ -33,6 +33,19 @@
 #define kMQTTBrokerPortKey @"port" // NSNumber
 #define kMQTTBrokerWillKey @"will" // MQTTBrokerWill
 
+enum
+{
+    MosquittoOutOfMemoryError = MOSQ_ERR_NOMEM,
+    MosquittoProtocolError = MOSQ_ERR_PROTOCOL,
+    MosquittoInvalidInputParametersError = MOSQ_ERR_INVAL,
+    MosquittoNoConnectionError = MOSQ_ERR_NO_CONN,
+    MosquittoRefusedConnectionError = MOSQ_ERR_CONN_REFUSED,
+    MosquittoLostConnectionError = MOSQ_ERR_CONN_LOST,
+    MosquittoTooLargePayloadError = MOSQ_ERR_PAYLOAD_SIZE,
+    MosquittoUnknownError = NSUIntegerMax
+};
+typedef NSUInteger MosquittoErrorCode;
+
 @class MosquittoMessage;
 
 @interface MosquittoClient : NSObject
