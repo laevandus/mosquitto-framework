@@ -47,7 +47,7 @@
 
 @property (nonatomic, assign) NSUInteger keepAliveInterval; // defaults to 30 seconds, takes effect when calling connect
 @property (nonatomic, assign) BOOL cleanSession; // defaults to YES, takes effect when calling connect
-@property (nonatomic, assign) NSUInteger messageRetryInterval; // defaults to 60 seconds, takes effect immeditately
+@property (nonatomic, assign) NSUInteger messageRetryInterval; // defaults to 60 seconds, takes effect immediately
 
 
 

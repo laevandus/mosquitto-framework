@@ -79,6 +79,7 @@
                 // Handle error and return nil
                 if (result != MOSQ_ERR_SUCCESS)
                 {
+                    mosquitto_destroy(mosquitto_client);
                     NSLog(@"%s error setting will with error code %d", __func__, result);
                     return nil;
                 }
