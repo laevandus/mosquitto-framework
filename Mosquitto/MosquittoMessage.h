@@ -38,3 +38,9 @@
 @property (nonatomic, readonly) NSUInteger qualityOfServiceLevel;
 
 @end
+
+@interface MosquittoMessage(OutgoingMessage)
+
+- (id)initWithMessageTopic:(NSString *)aTopic payload:(NSData *)aPayload qualityOfServiceLevel:(NSUInteger)aQoSLevel;
+
+@end

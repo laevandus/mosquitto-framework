@@ -42,6 +42,7 @@
     return self;
 }
 
+
 - (id)initWithCMessage:(const struct mosquitto_message *)message
 {
     if ((self = [self initWithMessageID:message->mid]))
@@ -49,6 +50,19 @@
         _topic = [NSString stringWithCString:message->topic encoding:NSUTF8StringEncoding];
         _payload = [NSData dataWithBytes:message->payload length:message->payloadlen];
         _qualityOfServiceLevel = message->qos;
+    }
+    
+    return self;
+}
+
+
+- (id)initWithMessageTopic:(NSString *)aTopic payload:(NSData *)aPayload qualityOfServiceLevel:(NSUInteger)aQoSLevel
+{
+    if ((self = [self initWithMessageID:NSUIntegerMax]))
+    {
+        _topic = aTopic;
+        _payload = aPayload;
+        _qualityOfServiceLevel = aQoSLevel;
     }
     
     return self;
