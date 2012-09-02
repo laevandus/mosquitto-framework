@@ -65,7 +65,6 @@ typedef NSUInteger MosquittoErrorCode;
 @property (nonatomic, assign) NSUInteger messageRetryInterval; // defaults to 60 seconds, takes effect immediately
 
 - (BOOL)connect;
-- (BOOL)reconnect;
 - (BOOL)disconnect;
 
 - (BOOL)publishMessage:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;

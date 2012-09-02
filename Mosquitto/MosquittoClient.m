@@ -35,6 +35,11 @@
 @interface MosquittoClient()
 @property (nonatomic, readonly) id delegate;
 @property (nonatomic, readonly) NSCache *messageCache;
+
+@property (assign, getter = isNetworkLoopActive) BOOL networkLoopActive;
+@property (assign) BOOL tearDownNetworkLoop;
+- (void)startNetworkEventLoop;
+- (void)stopNetworkEventLoop;
 @end
 
 @implementation MosquittoClient
@@ -144,17 +149,8 @@
     
     if (result != MOSQ_ERR_SUCCESS)
         NSLog(@"%s failed with libmosquitto error code %d", __func__, result);
-    
-    return result == MOSQ_ERR_SUCCESS;
-}
-
-
-- (BOOL)reconnect
-{
-    int result = mosquitto_reconnect(mosquitto_client);
-    
-    if (result != MOSQ_ERR_SUCCESS)
-        NSLog(@"%s failed with libmosquitto error code %d", __func__, result);
+    else
+        [self startNetworkEventLoop];
     
     return result == MOSQ_ERR_SUCCESS;
 }
@@ -168,6 +164,40 @@
         NSLog(@"%s failed with libmosquitto error code %d", __func__, result);
     
     return result == MOSQ_ERR_SUCCESS;
+}
+
+
+#pragma mark -
+#pragma mark Loop
+
+- (void)startNetworkEventLoop
+{
+    if (self.isNetworkLoopActive)
+        return;
+    
+    self.tearDownNetworkLoop = NO;
+    self.networkLoopActive = YES;
+    
+    dispatch_queue_t queue = dispatch_queue_create("com.mosquitto-framework.client", DISPATCH_QUEUE_CONCURRENT);
+    dispatch_async(queue, ^
+                   {
+                       while (!mosquitto_loop(mosquitto_client, -1))
+                       {
+                           if (self.tearDownNetworkLoop)
+                               break;
+                       }
+                       
+                       // Reset variables as network loop stopped
+                       self.tearDownNetworkLoop = NO;
+                       self.networkLoopActive = NO;
+                   });
+}
+
+
+- (void)stopNetworkEventLoop
+{
+    if (self.isNetworkLoopActive)
+        self.tearDownNetworkLoop = YES;
 }
 
 
@@ -287,6 +317,9 @@ static void on_disconnect(void *client)
     {
         [mosquittoClient.delegate mosquittoClientDidDisconnect:mosquittoClient];
     }
+    
+    // Tear down event loop
+    [mosquittoClient stopNetworkEventLoop];
 }
 
 
