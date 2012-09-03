@@ -68,4 +68,28 @@
     return self;
 }
 
+
+#pragma mark -
+#pragma mark Identifying and Comparing Objects
+
+- (NSUInteger)hash
+{
+    return self.messageID;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![object isKindOfClass:[MosquittoMessage class]])
+        return NO;
+    
+    return [object messageID] == self.messageID;
+}
+
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"%@ <#%lu topic = %@ payload = %@ qos = %lu>", self, self.messageID, self.topic, self.payload, self.qualityOfServiceLevel];
+}
+
 @end

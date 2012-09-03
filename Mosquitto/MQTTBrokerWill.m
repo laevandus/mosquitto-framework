@@ -42,4 +42,37 @@
 	return self;
 }
 
+
+#pragma mark -
+#pragma mark Identifying and Comparing Objects
+
+- (NSUInteger)hash
+{
+    return [self.topic hash] ^ [self.statement hash] ^ self.qualityOfServiceLevel;
+}
+
+
+- (BOOL)isEqual:(id)object
+{
+    if (![object isKindOfClass:[MQTTBrokerWill class]])
+        return NO;
+    
+    if (![[object topic] isEqualToString:self.topic])
+        return NO;
+    
+    if (![[object statement] isEqual:self.statement])
+        return NO;
+    
+    if ([object qualityOfServiceLevel] != self.qualityOfServiceLevel)
+        return NO;
+    
+    return YES;
+}
+
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"%@ <topic = %@ statement = %@ qos = %lu>", self, self.topic, self.statement, self.qualityOfServiceLevel];
+}
+
 @end
