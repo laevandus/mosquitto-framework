@@ -46,6 +46,17 @@ enum
 };
 typedef NSUInteger MosquittoErrorCode;
 
+enum
+{
+    MosquittoNoLogging = 0x00,
+    MosquittoNoticeLogging = MOSQ_LOG_NOTICE,
+    MosquittoWarningLogging = MOSQ_LOG_WARNING,
+    MosquittoErrorLogging = MOSQ_LOG_ERR,
+    MosquittoDebugLogging = MOSQ_LOG_DEBUG,
+    MosquittoAllLogging = MOSQ_LOG_ALL
+};
+typedef NSUInteger MosquittoLoggingMask;
+
 @class MosquittoMessage;
 
 @interface MosquittoClient : NSObject
@@ -70,5 +81,7 @@ typedef NSUInteger MosquittoErrorCode;
 - (BOOL)publishMessage:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
 - (BOOL)subscribeToTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
 - (BOOL)unsubscribeFromTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
+
+@property (nonatomic, assign) MosquittoLoggingMask loggingMask;
 
 @end

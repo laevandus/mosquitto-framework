@@ -286,6 +286,15 @@
 }
 
 
+- (void)setLoggingMask:(MosquittoLoggingMask)aLoggingMask
+{
+    _loggingMask = aLoggingMask;
+    
+    int logging_destination = (_loggingMask == MosquittoNoLogging) ? MOSQ_LOG_NONE : MOSQ_LOG_STDOUT;
+    mosquitto_log_init(mosquitto_client, (int)_loggingMask, logging_destination);
+}
+
+
 #pragma mark -
 #pragma mark Errors
 
