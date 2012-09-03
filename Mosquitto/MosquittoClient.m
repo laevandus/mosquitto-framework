@@ -270,9 +270,9 @@
 #pragma mark -
 #pragma mark Authentication
 
-- (void)setUsername:(NSString *)username password:(NSString *)password
+- (void)setUsername:(NSString *)anUsername password:(NSString *)aPassword
 {
-	mosquitto_username_pw_set(mosquitto_client, [username cStringUsingEncoding:NSUTF8StringEncoding], [password cStringUsingEncoding:NSUTF8StringEncoding]);
+	mosquitto_username_pw_set(mosquitto_client, [anUsername cStringUsingEncoding:NSUTF8StringEncoding], [aPassword cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 

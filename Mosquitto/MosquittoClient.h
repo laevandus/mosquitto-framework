@@ -64,24 +64,98 @@ typedef NSUInteger MosquittoLoggingMask;
 	struct mosquitto *mosquitto_client;
 }
 
+/**
+ Designated initialized for creating new MosquittoClient instance with broker info.
+ @param anIdentifier - String used as client identifier. Must not be zero length.
+ @param aBrokerInfo - Dictionary containing required host and port information and optional MQTTBrokerWill instance.
+ @param aDelegate - Object to send methods defined in MosquittoClientDelegate.
+ @returns MosquittoClient instance with identifier and broker configuration. Nil when invalid identifier or broker configuration.
+ */
 - (id)initWithIdentifier:(NSString *)anIdentifier brokerInfo:(NSDictionary *)aBrokerInfo delegate:(id)aDelegate;
 
+
+/**
+ MosquittoClient identifier.
+ */
 @property (nonatomic, readonly) NSString *identifier;
+
+
+/**
+ MosquittoClient broker configuration.
+ */
 @property (nonatomic, readonly) NSDictionary *brokerInfo;
 
-- (void)setUsername:(NSString *)username password:(NSString *)password;
 
-@property (nonatomic, assign) NSUInteger keepAliveInterval; // defaults to 30 seconds, takes effect when calling connect
-@property (nonatomic, assign) BOOL cleanSession; // defaults to YES, takes effect when calling connect
-@property (nonatomic, assign) NSUInteger messageRetryInterval; // defaults to 60 seconds, takes effect immediately
+/**
+ Sets username and password used for connecting broker. Broker have to support MQTT version 3.1.
+ @param anUsername - Username for authentication.
+ @param aPassword - Password used together with username. If username is nil, password is ignored and only username is sent.
+ */
+- (void)setUsername:(NSString *)anUsername password:(NSString *)aPassword;
 
+
+/**
+ Number of seconds when broker sends PING message to the client when no other messages are exhanged. Default value is 30 seconds. Takes effect when calling -connect.
+ */
+@property (nonatomic, assign) NSUInteger keepAliveInterval;
+
+
+/**
+ When YES, broker cleans all messages and subscriptions on disconnect. Default value is YES. Takes effect when calling -connect.
+ */
+@property (nonatomic, assign) BOOL cleanSession;
+
+
+/**
+ Number of seconds until client tries to resend messages. Applies to publish messages with quality of service > 0. Default value is 60 seconds. Takes effect immediately.
+ */
+@property (nonatomic, assign) NSUInteger messageRetryInterval;
+
+
+/**
+ Attempts to connect to the broker.
+ @returns YES if successful, otherwise NO. Use delegate method for getting error reason.
+ */
 - (BOOL)connect;
+
+
+/**
+ Attempts to disconnect from the broker.
+ @returns YES if successful, otherwise NO.
+ */
 - (BOOL)disconnect;
 
+
+/**
+ Publishes message on a topic.
+ @param outgoingMessage - MosquittoMessage containing topic, payload and quality of service.
+ @param anError - An error object containing domain and error code.
+ @returns YES if publish message is valid and client is connected to the broker, otherwise NO.
+ */
 - (BOOL)publishMessage:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
+
+
+/**
+ Subscribes to a topic.
+ @param outgoingMessage - MosquittoMessage with topic which defines subscription pattern and with requested quality of service.
+ @param anError - An error object containing domain and error code.
+ @returns YES if subscription message is valid and client is connected to the broker, otherwise NO.
+ */
 - (BOOL)subscribeToTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
+
+
+/**
+ Unsubscribes from a topic.
+ @param outgoingMessage - MosquittoMessage with topic which defines unsubscription pattern.
+ @param anError - An error object containing domain and error code.
+ @returns YES if unsubscription message is valid and client is connected to the broker, otherwise NO.
+ */
 - (BOOL)unsubscribeFromTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
 
+
+/**
+ Sets client logging options. Log messages are sent to STDOUT. 
+ */
 @property (nonatomic, assign) MosquittoLoggingMask loggingMask;
 
 @end
