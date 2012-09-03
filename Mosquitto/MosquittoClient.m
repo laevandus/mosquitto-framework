@@ -300,7 +300,20 @@
 
 - (NSError *)_errorWithMosquittoErrorCode:(NSUInteger)errorCode
 {
-    return [NSError errorWithDomain:@"MosquittoErrorDomain" code:errorCode userInfo:nil];
+    switch (errorCode)
+    {
+        case MosquittoOutOfMemoryError:
+        case MosquittoProtocolError:
+        case MosquittoInvalidInputParametersError:
+        case MosquittoNoConnectionError:
+        case MosquittoRefusedConnectionError:
+        case MosquittoLostConnectionError:
+        case MosquittoTooLargePayloadError:
+            return [NSError errorWithDomain:@"MosquittoErrorDomain" code:errorCode userInfo:nil];
+        default:
+            NSLog(@"%s Unhandled error code %ld", __func__, errorCode);
+            return [NSError errorWithDomain:@"MosquittoErrorDomain" code:MosquittoUnknownError userInfo:nil];
+    }
 }
 
 
