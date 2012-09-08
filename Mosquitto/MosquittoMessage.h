@@ -30,17 +30,37 @@
 
 @interface MosquittoMessage : NSObject
 
-- (id)initWithMessageID:(NSUInteger)aMessageID;
-
+/**
+ Message ID assigned by libMosquitto.
+ */
 @property (nonatomic, readonly) NSUInteger messageID;
+
+/**
+ Topic to publish the message.
+ */
 @property (nonatomic, readonly) NSString *topic;
+
+/**
+ Message body.
+ */
 @property (nonatomic, readonly) NSData *payload;
+
+/**
+ Quality of Service of the message.
+ */
 @property (nonatomic, readonly) NSUInteger qualityOfServiceLevel;
 
 @end
 
 @interface MosquittoMessage(OutgoingMessage)
 
+/**
+ Initializes outgoing MosquittoMessage instance.
+ @param aTopic - Topic to publish the message.
+ @param aPayload - Message body.
+ @param aQoSLevel - Quality of Service of the message.
+ @returns Initialized MosquittoMessage instance.
+ */
 - (id)initWithMessageTopic:(NSString *)aTopic payload:(NSData *)aPayload qualityOfServiceLevel:(NSUInteger)aQoSLevel;
 
 @end

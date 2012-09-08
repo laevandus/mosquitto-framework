@@ -28,6 +28,7 @@
 
 #import "MosquittoTests.h"
 #import "MosquittoMessage.h"
+#import "MosquittoMessageInternal.h"
 
 @implementation MosquittoTests
 

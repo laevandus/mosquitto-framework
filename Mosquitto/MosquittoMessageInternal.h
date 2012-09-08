@@ -31,6 +31,7 @@
 
 @interface MosquittoMessage()
 
+- (id)initWithMessageID:(NSUInteger)aMessageID;
 - (id)initWithCMessage:(const struct mosquitto_message *)message;
 
 @property (nonatomic, readwrite, assign) NSUInteger messageID;

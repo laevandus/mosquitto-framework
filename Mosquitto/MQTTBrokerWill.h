@@ -30,10 +30,27 @@
 
 @interface MQTTBrokerWill : NSObject
 
+/**
+ Initializes MQTTBrokerWill instance which can be used for setting will to the broker. Topic and statement is validated when initializing MosquittoClient instance with MQTTBrokerWill.
+ @param aTopic - Topic to publish the will.
+ @param aStatement - Will information.
+ @returns Initialized MQTTBrokerWill.
+ */
 - (id)initWithTopic:(NSString *)aTopic statement:(NSData *)aStatement qos:(NSUInteger)qos;
 
+/**
+ Topic of the will.
+ */
 @property (nonatomic, readonly) NSString *topic;
+
+/**
+ Information passed to the topic.
+ */
 @property (nonatomic, readonly) NSData *statement;
+
+/**
+ Quality of Service level for the will.
+ */
 @property (nonatomic, readonly) NSUInteger qualityOfServiceLevel;
 
 @end
