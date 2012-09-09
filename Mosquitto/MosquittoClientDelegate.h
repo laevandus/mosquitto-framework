@@ -27,8 +27,6 @@
 
 
 #import <Foundation/Foundation.h>
-#import "MosquittoClient.h"
-#import "MosquittoMessage.h"
 
 enum
 {
@@ -38,6 +36,8 @@ enum
     MosquittoConnectionResponseUnavailableBroker = 3
 };
 typedef NSUInteger MosquittoConnectionResponse;
+
+@class MosquittoClient, MosquittoMessage;
 
 @protocol MosquittoClientDelegate <NSObject>
 

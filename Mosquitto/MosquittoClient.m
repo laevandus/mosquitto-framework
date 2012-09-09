@@ -29,9 +29,6 @@
 #import "MosquittoClient.h"
 #include "mosquitto.h"
 
-#import "MQTTBrokerWill.h"
-#import "MosquittoClientDelegate.h"
-#import "MosquittoMessage.h"
 #import "MosquittoMessageInternal.h"
 
 @interface MosquittoClient()

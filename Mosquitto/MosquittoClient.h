@@ -27,6 +27,9 @@
 
 
 #import <Foundation/Foundation.h>
+#import "MosquittoClientDelegate.h"
+#import "MosquittoMessage.h"
+#import "MQTTBrokerWill.h"
 
 #define kMQTTBrokerHostKey @"host" // NSString
 #define kMQTTBrokerPortKey @"port" // NSNumber
@@ -55,8 +58,6 @@ enum
     MosquittoAllLogging = 0xFF
 };
 typedef NSUInteger MosquittoLoggingMask;
-
-@class MosquittoMessage;
 
 @interface MosquittoClient : NSObject
 
