@@ -204,7 +204,7 @@
 #pragma mark -
 #pragma mark Broker
 
-- (BOOL)publishMessage:(MosquittoMessage *)outgoingMessage error:(NSError **)anError
+- (BOOL)publish:(MosquittoMessage *)outgoingMessage error:(NSError **)anError
 {
     uint16_t messageID = 0;
     
@@ -229,7 +229,7 @@
 }
 
 
-- (BOOL)subscribeToTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError
+- (BOOL)subscribe:(MosquittoMessage *)outgoingMessage error:(NSError **)anError
 {
     uint16_t messageID = 0;
     int result = mosquitto_subscribe(_mosquitto_client, &messageID, [outgoingMessage.topic cStringUsingEncoding:NSUTF8StringEncoding], (int)outgoingMessage.qualityOfServiceLevel);
@@ -247,7 +247,7 @@
 }
 
 
-- (BOOL)unsubscribeFromTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError
+- (BOOL)unsubscribe:(MosquittoMessage *)outgoingMessage error:(NSError **)anError
 {
     uint16_t messageID = 0;
     int result = mosquitto_unsubscribe(_mosquitto_client, &messageID, [outgoingMessage.topic cStringUsingEncoding:NSUTF8StringEncoding]);

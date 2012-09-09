@@ -129,7 +129,7 @@ typedef NSUInteger MosquittoLoggingMask;
  @param anError - An error object containing domain and error code.
  @returns YES if publish message is valid and client is connected to the broker, otherwise NO.
  */
-- (BOOL)publishMessage:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
+- (BOOL)publish:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
 
 
 /**
@@ -138,7 +138,7 @@ typedef NSUInteger MosquittoLoggingMask;
  @param anError - An error object containing domain and error code.
  @returns YES if subscription message is valid and client is connected to the broker, otherwise NO.
  */
-- (BOOL)subscribeToTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
+- (BOOL)subscribe:(MosquittoClient *)outgoingMessage error:(NSError **)anError;
 
 
 /**
@@ -147,7 +147,7 @@ typedef NSUInteger MosquittoLoggingMask;
  @param anError - An error object containing domain and error code.
  @returns YES if unsubscription message is valid and client is connected to the broker, otherwise NO.
  */
-- (BOOL)unsubscribeFromTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
+- (BOOL)unsubscribe:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
 
 
 /**

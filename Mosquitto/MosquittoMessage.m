@@ -69,6 +69,12 @@
 }
 
 
++ (id)messageWithTopic:(NSString *)aTopic payload:(NSString *)aPayload qualityOfServiceLevel:(NSUInteger)aQoSLevel
+{
+    return [[[self class] alloc] initWithMessageTopic:aTopic payload:aPayload qualityOfServiceLevel:aQoSLevel];
+}
+
+
 #pragma mark -
 #pragma mark Identifying and Comparing Objects
 

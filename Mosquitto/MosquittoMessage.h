@@ -63,4 +63,9 @@
  */
 - (id)initWithMessageTopic:(NSString *)aTopic payload:(NSString *)aPayload qualityOfServiceLevel:(NSUInteger)aQoSLevel;
 
+/**
+ Convienence method for initializing MosquittoMessage.
+ */
++ (id)messageWithTopic:(NSString *)aTopic payload:(NSString *)aPayload qualityOfServiceLevel:(NSUInteger)aQoSLevel;
+
 @end
