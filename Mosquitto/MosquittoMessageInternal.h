@@ -35,6 +35,6 @@
 - (id)initWithCMessage:(const struct mosquitto_message *)message;
 
 @property (nonatomic, readwrite, assign) NSUInteger messageID;
-@property (nonatomic, readwrite, assign) NSData *payload;
+@property (nonatomic, readwrite, assign) NSString *payload;
 
 @end

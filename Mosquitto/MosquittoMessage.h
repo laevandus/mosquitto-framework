@@ -43,7 +43,7 @@
 /**
  Message body.
  */
-@property (nonatomic, readonly) NSData *payload;
+@property (nonatomic, readonly) NSString *payload;
 
 /**
  Quality of Service of the message.
@@ -61,6 +61,6 @@
  @param aQoSLevel - Quality of Service of the message.
  @returns Initialized MosquittoMessage instance.
  */
-- (id)initWithMessageTopic:(NSString *)aTopic payload:(NSData *)aPayload qualityOfServiceLevel:(NSUInteger)aQoSLevel;
+- (id)initWithMessageTopic:(NSString *)aTopic payload:(NSString *)aPayload qualityOfServiceLevel:(NSUInteger)aQoSLevel;
 
 @end

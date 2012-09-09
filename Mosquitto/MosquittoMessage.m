@@ -48,7 +48,7 @@
     if ((self = [self initWithMessageID:message->mid]))
     {
         _topic = [NSString stringWithCString:message->topic encoding:NSUTF8StringEncoding];
-        _payload = [NSData dataWithBytes:message->payload length:message->payloadlen];
+        _payload = [[NSString alloc] initWithBytes:message->payload length:message->payloadlen encoding:NSASCIIStringEncoding];
         _qualityOfServiceLevel = message->qos;
     }
     
@@ -56,7 +56,7 @@
 }
 
 
-- (id)initWithMessageTopic:(NSString *)aTopic payload:(NSData *)aPayload qualityOfServiceLevel:(NSUInteger)aQoSLevel
+- (id)initWithMessageTopic:(NSString *)aTopic payload:(NSString *)aPayload qualityOfServiceLevel:(NSUInteger)aQoSLevel
 {
     if ((self = [self initWithMessageID:NSUIntegerMax]))
     {

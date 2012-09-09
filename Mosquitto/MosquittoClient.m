@@ -209,10 +209,8 @@
     uint16_t messageID = 0;
     
     // Get payload
-    uint32_t payload_length = (uint32_t)[outgoingMessage.payload length];
-    uint8_t payload[payload_length];
-    [outgoingMessage.payload getBytes:&payload];
-
+    uint32_t payload_length = (uint32_t)[outgoingMessage.payload lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+    uint8_t *payload = (uint8_t *)[outgoingMessage.payload cStringUsingEncoding:NSUTF8StringEncoding];
     int result = mosquitto_publish(_mosquitto_client, &messageID, [outgoingMessage.topic cStringUsingEncoding:NSUTF8StringEncoding], payload_length, payload, (int)outgoingMessage.qualityOfServiceLevel, true);
     
     // libmosquitto assigns IDs for all messages
@@ -396,7 +394,7 @@ static void on_subscribe(void *client, uint16_t message_id, int qos_count, const
         else
         {
             // Set payload to the message used for subscribing
-            message.payload = [[NSData alloc] initWithBytes:granted_qos length:qos_count];
+            message.payload = [[NSString alloc] initWithBytes:granted_qos length:qos_count encoding:NSASCIIStringEncoding];
         }
         
         [mosquittoClient.delegate mosquittoClient:mosquittoClient didPublishMessage:message];
