@@ -27,12 +27,15 @@
 
 
 #import "MosquittoClient.h"
+#include "mosquitto.h"
+
 #import "MQTTBrokerWill.h"
 #import "MosquittoClientDelegate.h"
 #import "MosquittoMessage.h"
 #import "MosquittoMessageInternal.h"
 
 @interface MosquittoClient()
+@property (nonatomic, assign) struct mosquitto *mosquitto_client;
 @property (nonatomic, readonly) id delegate;
 @property (nonatomic, readonly) NSCache *messageCache;
 
@@ -63,20 +66,20 @@
             return nil;
         }
         
-		mosquitto_client = mosquitto_new([anIdentifier cStringUsingEncoding:NSUTF8StringEncoding], (__bridge void *)(self));
+		_mosquitto_client = mosquitto_new([anIdentifier cStringUsingEncoding:NSUTF8StringEncoding], (__bridge void *)(self));
 		
-		if (mosquitto_client)
+		if (_mosquitto_client)
 		{
             // Validate broker info
             if (![aBrokerInfo objectForKey:kMQTTBrokerHostKey])
 			{
-                mosquitto_destroy(mosquitto_client);
+                mosquitto_destroy(_mosquitto_client);
                 NSLog(@"%s host not specified", __func__);
                 return nil;
             }
             else if (![aBrokerInfo objectForKey:kMQTTBrokerPortKey])
 			{
-                mosquitto_destroy(mosquitto_client);
+                mosquitto_destroy(_mosquitto_client);
                 NSLog(@"%s port not specified", __func__);
                 return nil;
             }
@@ -104,27 +107,27 @@
 				[will.statement getBytes:&payload];
                 
                 // Set will
-				int result = mosquitto_will_set(mosquitto_client, true, [will.topic cStringUsingEncoding:NSUTF8StringEncoding], payload_length, payload, (int)will.qualityOfServiceLevel, true);
+				int result = mosquitto_will_set(_mosquitto_client, true, [will.topic cStringUsingEncoding:NSUTF8StringEncoding], payload_length, payload, (int)will.qualityOfServiceLevel, true);
                 
                 // Handle error and return nil
                 if (result != MOSQ_ERR_SUCCESS)
                 {
-                    mosquitto_destroy(mosquitto_client);
+                    mosquitto_destroy(_mosquitto_client);
                     NSLog(@"%s error setting will with error code %d", __func__, result);
                     return nil;
                 }
 			}
             
             // Set callbacks
-            mosquitto_connect_callback_set(mosquitto_client, on_connect);
-            mosquitto_disconnect_callback_set(mosquitto_client, on_disconnect);
+            mosquitto_connect_callback_set(_mosquitto_client, on_connect);
+            mosquitto_disconnect_callback_set(_mosquitto_client, on_disconnect);
             
-            mosquitto_publish_callback_set(mosquitto_client, on_publish);
+            mosquitto_publish_callback_set(_mosquitto_client, on_publish);
             
-            mosquitto_message_callback_set(mosquitto_client, on_message);
+            mosquitto_message_callback_set(_mosquitto_client, on_message);
             
-            mosquitto_subscribe_callback_set(mosquitto_client, on_subscribe);
-            mosquitto_unsubscribe_callback_set(mosquitto_client, on_unsubscribe);
+            mosquitto_subscribe_callback_set(_mosquitto_client, on_subscribe);
+            mosquitto_unsubscribe_callback_set(_mosquitto_client, on_unsubscribe);
 		}
 	}
 	
@@ -134,7 +137,7 @@
 
 - (void)dealloc
 {
-	mosquitto_destroy(mosquitto_client);
+	mosquitto_destroy(_mosquitto_client);
 }
 
 
@@ -145,7 +148,7 @@
 {
     NSString *host = [self.brokerInfo objectForKey:kMQTTBrokerHostKey];
     int port = [[self.brokerInfo objectForKey:kMQTTBrokerPortKey] intValue];
-    int result = mosquitto_connect(mosquitto_client, [host cStringUsingEncoding:NSUTF8StringEncoding], port, (int)self.keepAliveInterval, self.cleanSession);
+    int result = mosquitto_connect(_mosquitto_client, [host cStringUsingEncoding:NSUTF8StringEncoding], port, (int)self.keepAliveInterval, self.cleanSession);
     
     if (result != MOSQ_ERR_SUCCESS)
         NSLog(@"%s failed with libmosquitto error code %d", __func__, result);
@@ -158,7 +161,7 @@
 
 - (BOOL)disconnect
 {
-    int result = mosquitto_disconnect(mosquitto_client);
+    int result = mosquitto_disconnect(_mosquitto_client);
     
     if (result != MOSQ_ERR_SUCCESS)
         NSLog(@"%s failed with libmosquitto error code %d", __func__, result);
@@ -181,7 +184,7 @@
     dispatch_queue_t queue = dispatch_queue_create("com.mosquitto-framework.client", DISPATCH_QUEUE_CONCURRENT);
     dispatch_async(queue, ^
                    {
-                       while (!mosquitto_loop(mosquitto_client, -1))
+                       while (!mosquitto_loop(_mosquitto_client, -1))
                        {
                            if (self.tearDownNetworkLoop)
                                break;
@@ -213,7 +216,7 @@
     uint8_t payload[payload_length];
     [outgoingMessage.payload getBytes:&payload];
 
-    int result = mosquitto_publish(mosquitto_client, &messageID, [outgoingMessage.topic cStringUsingEncoding:NSUTF8StringEncoding], payload_length, payload, (int)outgoingMessage.qualityOfServiceLevel, true);
+    int result = mosquitto_publish(_mosquitto_client, &messageID, [outgoingMessage.topic cStringUsingEncoding:NSUTF8StringEncoding], payload_length, payload, (int)outgoingMessage.qualityOfServiceLevel, true);
     
     // libmosquitto assigns IDs for all messages
     outgoingMessage.messageID = messageID;
@@ -234,7 +237,7 @@
 - (BOOL)subscribeToTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError
 {
     uint16_t messageID = 0;
-    int result = mosquitto_subscribe(mosquitto_client, &messageID, [outgoingMessage.topic cStringUsingEncoding:NSUTF8StringEncoding], (int)outgoingMessage.qualityOfServiceLevel);
+    int result = mosquitto_subscribe(_mosquitto_client, &messageID, [outgoingMessage.topic cStringUsingEncoding:NSUTF8StringEncoding], (int)outgoingMessage.qualityOfServiceLevel);
     
     outgoingMessage.messageID = messageID;
     [self.messageCache setObject:outgoingMessage forKey:[NSNumber numberWithUnsignedInteger:outgoingMessage.messageID]];
@@ -252,7 +255,7 @@
 - (BOOL)unsubscribeFromTopic:(MosquittoMessage *)outgoingMessage error:(NSError **)anError
 {
     uint16_t messageID = 0;
-    int result = mosquitto_unsubscribe(mosquitto_client, &messageID, [outgoingMessage.topic cStringUsingEncoding:NSUTF8StringEncoding]);
+    int result = mosquitto_unsubscribe(_mosquitto_client, &messageID, [outgoingMessage.topic cStringUsingEncoding:NSUTF8StringEncoding]);
     
     outgoingMessage.messageID = messageID;
     [self.messageCache setObject:outgoingMessage forKey:[NSNumber numberWithUnsignedInteger:outgoingMessage.messageID]];
@@ -272,7 +275,7 @@
 
 - (void)setUsername:(NSString *)anUsername password:(NSString *)aPassword
 {
-	mosquitto_username_pw_set(mosquitto_client, [anUsername cStringUsingEncoding:NSUTF8StringEncoding], [aPassword cStringUsingEncoding:NSUTF8StringEncoding]);
+	mosquitto_username_pw_set(_mosquitto_client, [anUsername cStringUsingEncoding:NSUTF8StringEncoding], [aPassword cStringUsingEncoding:NSUTF8StringEncoding]);
 }
 
 
@@ -282,7 +285,7 @@
 - (void)setMessageRetryInterval:(NSUInteger)messageRetryInterval
 {
     _messageRetryInterval = messageRetryInterval;
-    mosquitto_message_retry_set(mosquitto_client, (unsigned int)_messageRetryInterval);
+    mosquitto_message_retry_set(_mosquitto_client, (unsigned int)_messageRetryInterval);
 }
 
 
@@ -291,7 +294,7 @@
     _loggingMask = aLoggingMask;
     
     int logging_destination = (_loggingMask == MosquittoNoLogging) ? MOSQ_LOG_NONE : MOSQ_LOG_STDOUT;
-    mosquitto_log_init(mosquitto_client, (int)_loggingMask, logging_destination);
+    mosquitto_log_init(_mosquitto_client, (int)_loggingMask, logging_destination);
 }
 
 

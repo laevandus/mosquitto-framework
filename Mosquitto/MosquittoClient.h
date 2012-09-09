@@ -27,7 +27,6 @@
 
 
 #import <Foundation/Foundation.h>
-#include "mosquitto.h"
 
 #define kMQTTBrokerHostKey @"host" // NSString
 #define kMQTTBrokerPortKey @"port" // NSNumber
@@ -35,13 +34,13 @@
 
 enum
 {
-    MosquittoOutOfMemoryError = MOSQ_ERR_NOMEM,
-    MosquittoProtocolError = MOSQ_ERR_PROTOCOL,
-    MosquittoInvalidInputParametersError = MOSQ_ERR_INVAL,
-    MosquittoNoConnectionError = MOSQ_ERR_NO_CONN,
-    MosquittoRefusedConnectionError = MOSQ_ERR_CONN_REFUSED,
-    MosquittoLostConnectionError = MOSQ_ERR_CONN_LOST,
-    MosquittoTooLargePayloadError = MOSQ_ERR_PAYLOAD_SIZE,
+    MosquittoOutOfMemoryError = 1,
+    MosquittoProtocolError = 2,
+    MosquittoInvalidInputParametersError = 3,
+    MosquittoNoConnectionError = 4,
+    MosquittoRefusedConnectionError = 5,
+    MosquittoLostConnectionError = 7,
+    MosquittoTooLargePayloadError = 9,
     MosquittoUnknownError = NSUIntegerMax
 };
 typedef NSUInteger MosquittoErrorCode;
@@ -49,20 +48,17 @@ typedef NSUInteger MosquittoErrorCode;
 enum
 {
     MosquittoNoLogging = 0x00,
-    MosquittoNoticeLogging = MOSQ_LOG_NOTICE,
-    MosquittoWarningLogging = MOSQ_LOG_WARNING,
-    MosquittoErrorLogging = MOSQ_LOG_ERR,
-    MosquittoDebugLogging = MOSQ_LOG_DEBUG,
-    MosquittoAllLogging = MOSQ_LOG_ALL
+    MosquittoNoticeLogging = 0x02,
+    MosquittoWarningLogging = 0x04,
+    MosquittoErrorLogging = 0x08,
+    MosquittoDebugLogging = 0x10,
+    MosquittoAllLogging = 0xFF
 };
 typedef NSUInteger MosquittoLoggingMask;
 
 @class MosquittoMessage;
 
 @interface MosquittoClient : NSObject
-{
-	struct mosquitto *mosquitto_client;
-}
 
 /**
  Designated initialized for creating new MosquittoClient instance with broker info.

@@ -44,7 +44,7 @@
 		C89ABE3B15EFCEC900E4CCC6 /* COPYING.txt in Resources */ = {isa = PBXBuildFile; fileRef = C89ABE3A15EFCEC900E4CCC6 /* COPYING.txt */; };
 		C89ABE4415EFE21000E4CCC6 /* MosquittoMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = C89ABE4215EFE21000E4CCC6 /* MosquittoMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C89ABE4515EFE21000E4CCC6 /* MosquittoMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = C89ABE4315EFE21000E4CCC6 /* MosquittoMessage.m */; };
-		C89ABE4815EFE2F700E4CCC6 /* MosquittoMessageInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = C89ABE4715EFE2F700E4CCC6 /* MosquittoMessageInternal.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		C89ABE4815EFE2F700E4CCC6 /* MosquittoMessageInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = C89ABE4715EFE2F700E4CCC6 /* MosquittoMessageInternal.h */; settings = {ATTRIBUTES = (); }; };
 		C8B3CBA015E9356800EAD702 /* mosquitto.c in Sources */ = {isa = PBXBuildFile; fileRef = C8B3CB9E15E9356700EAD702 /* mosquitto.c */; };
 		C8B3CBA115E9356800EAD702 /* mosquitto.h in Headers */ = {isa = PBXBuildFile; fileRef = C8B3CB9F15E9356800EAD702 /* mosquitto.h */; };
 /* End PBXBuildFile section */
