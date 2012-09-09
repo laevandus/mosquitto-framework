@@ -138,7 +138,7 @@ typedef NSUInteger MosquittoLoggingMask;
  @param anError - An error object containing domain and error code.
  @returns YES if subscription message is valid and client is connected to the broker, otherwise NO.
  */
-- (BOOL)subscribe:(MosquittoClient *)outgoingMessage error:(NSError **)anError;
+- (BOOL)subscribe:(MosquittoMessage *)outgoingMessage error:(NSError **)anError;
 
 
 /**
