@@ -72,7 +72,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"%@ <topic = %@ statement = %@ qos = %lu>", [self className], self.topic, self.statement, self.qualityOfServiceLevel];
+    return [NSString stringWithFormat:@"%@ <topic = %@ statement = %@ qos = %lu>", self.class, self.topic, self.statement, self.qualityOfServiceLevel];
 }
 
 @end

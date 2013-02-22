@@ -95,7 +95,7 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:@"%@ <#%lu topic = %@ payload = %@ qos = %lu>", [self className], self.messageID, self.topic, self.payload, self.qualityOfServiceLevel];
+    return [NSString stringWithFormat:@"%@ <#%lu topic = %@ payload = %@ qos = %lu>", self.class, self.messageID, self.topic, self.payload, self.qualityOfServiceLevel];
 }
 
 @end
